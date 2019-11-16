@@ -1,5 +1,7 @@
-FROM node:9.4
-RUN mkdir /usr/src/app
+# Last update: 2019/11/15
+
+FROM node:12
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # environment
@@ -9,10 +11,18 @@ ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 ENV REACT_APP_API_URL $REACT_APP_API_URL
 
-# install and cache dependencies
+# copy
+COPY dist /usr/src/app
+COPY scripts /usr/src/app/scripts
+COPY config /usr/src/app/config
+COPY public /usr/src/app/public
+COPY src /usr/src/app/src
 ADD package.json /usr/src/app/package.json
+ADD package-lock.json /usr/src/app/package-lock.json
+
+# install
 RUN npm install --silent
 RUN npm install react-scripts -g --silent
 
-# start with node
+EXPOSE 3000
 CMD ["npm", "start"]

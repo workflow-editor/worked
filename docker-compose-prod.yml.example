@@ -1,0 +1,20 @@
+version: '3.3'
+
+services:
+  worked-prod:
+    container_name: worked-prod
+    image: worked-prod:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+      args:
+        NODE_ENV: production
+        REACT_APP_API_URL: https://worked-api.domain.tld/
+    ports:
+      - '127.0.0.1:9502:80'
+    restart: always
+    healthcheck:
+        test: "nc -z localhost 80"
+        interval: 1s
+        timeout: 10s
+        retries: 5

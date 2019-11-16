@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+/dist/*
+!dist/node_modules.zip
+!dist/.gitkeep
 
 # testing
 /coverage

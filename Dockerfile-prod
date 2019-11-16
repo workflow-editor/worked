@@ -1,4 +1,6 @@
-FROM node:9.4 as builder
+# Last update: 2019/11/15
+
+FROM node:12 as builder
 RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
 
@@ -9,14 +11,21 @@ ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 ENV REACT_APP_API_URL $REACT_APP_API_URL
 
-# install and cache dependencies
+# copy
+COPY dist /usr/src/app
+COPY scripts /usr/src/app/scripts
+COPY config /usr/src/app/config
+COPY public /usr/src/app/public
+COPY src /usr/src/app/src
 ADD package.json /usr/src/app/package.json
+ADD package-lock.json /usr/src/app/package-lock.json
+
+# install
 RUN npm install --silent
-ADD . /usr/src/app
 RUN npm run build
 
 # share with nginx
-FROM nginx:1.13.8-alpine
+FROM nginx:1.17-alpine
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

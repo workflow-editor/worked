@@ -8,17 +8,38 @@
 
 ## Configuration, Install, Run
 
-1. Use [Docker](https://www.docker.com) for running and deploying/shipping the application or take a look at the manual environment in 2.
-2. Use manual environment: download, install and configure [NodeJS](https://nodejs.org).
+1. Use [Docker](https://www.docker.com) for running and deploying/shipping the application or take a look at the manual environment in 2 or in combination with docker-compose.
+2. Use manual _local_ environment: download, install and configure [NodeJS](https://nodejs.org).
+
+## Important preparations
+
+1. Extract `dist/node_modules.zip` in the `dist` folder, there should be a module called `varakh-react-diagrams`
+2. Besides _keeping_ `varakh-react-diagrams` there (for Docker), copy it manually to `node_modules/` as the dependency isn't available anymore
 
 ### Docker
+
+Be sure you did _important preparations_ before continuing!
+
+Build images for each environment:
+
+```
+sudo docker build -t worked-dev:latest -f Dockerfile-dev .
+
+# OR
+
+sudo docker build -t worked-prod:latest -f Dockerfile-prod .
+```
+
+Maybe use docker-compose afterwards and reference the images.
+
+### docker-compose
 
 Docker has to be installed locally.
 
 Available Dockerfiles:
 
-1. `docker-compose-dev.yml` for development (node based)
-2. `docker-compose-prod.yml` for production (nginx based)
+1. `docker-compose-dev.yml.example` for development (node based)
+2. `docker-compose-prod.yml.example` for production (nginx based)
 
 In the following a parameter might be `-f ymlFile`. If so, select one of the files from above.
 
@@ -35,11 +56,10 @@ In the following a parameter might be `-f ymlFile`. If so, select one of the fil
 
 You can push images to a repository at your will.
 
-### Manual
+### Local
 
-NodeJS has to be installed locally. 
-
-After this use `npm install` to install dependencies.
+1. NodeJS has to be installed locally.
+2. After this use `npm install` to install dependencies
 
 #### Run via CLI
 The application can be run by sourcing the environment variables from `local_env` locally and then running `npm start`.
