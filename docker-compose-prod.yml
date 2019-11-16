@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+  worked-prod:
+    container_name: worked-prod
+    image: worked-prod:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+      args:
+        NODE_ENV: production
+        REACT_APP_API_URL: https://thesis-api.schaeferdiek.eu/
+    ports:
+      - '127.0.0.1:9502:80'
+    restart: always

@@ -1,0 +1,22 @@
+FROM node:9.4 as builder
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
+
+# environment
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+ARG REACT_APP_API_URL
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+ENV REACT_APP_API_URL $REACT_APP_API_URL
+
+# install and cache dependencies
+ADD package.json /usr/src/app/package.json
+RUN npm install --silent
+ADD . /usr/src/app
+RUN npm run build
+
+# share with nginx
+FROM nginx:1.13.8-alpine
+COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

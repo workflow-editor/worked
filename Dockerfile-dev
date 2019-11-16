@@ -1,0 +1,18 @@
+FROM node:9.4
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
+
+# environment
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+ARG REACT_APP_API_URL
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+ENV REACT_APP_API_URL $REACT_APP_API_URL
+
+# install and cache dependencies
+ADD package.json /usr/src/app/package.json
+RUN npm install --silent
+RUN npm install react-scripts -g --silent
+
+# start with node
+CMD ["npm", "start"]

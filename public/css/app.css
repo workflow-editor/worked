@@ -1,0 +1,765 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body, #root {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    background: #3c3c3c;
+}
+
+.react-js-diagrams-canvas {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    cursor: move;
+    overflow: hidden;
+}
+
+.react-js-diagrams-canvas .point {
+    fill: rgba(255, 255, 255, 0.5);
+}
+
+.react-js-diagrams-canvas .point.selected {
+    fill: #00c0ff;
+}
+
+.react-js-diagrams-canvas .selector {
+    position: absolute;
+    background-color: rgba(0, 192, 255, 0.2);
+    border: solid 2px #00c0ff;
+}
+
+.react-js-diagrams-canvas svg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    transform-origin: 0 0;
+    overflow: visible;
+}
+
+.react-js-diagrams-canvas .node-view {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    pointer-events: none;
+    transform-origin: 0 0;
+    z-index: 1;
+}
+
+.react-js-diagrams-canvas .node {
+    position: absolute;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Chrome/Safari/Opera */
+    user-select: none;
+    cursor: move;
+    pointer-events: all;
+}
+
+.react-js-diagrams-canvas .node.selected > * {
+    border-color: #00c0ff !important;
+    -webkit-filter: drop-shadow(0 0 20px rgba(0, 192, 255, 0.5));
+}
+
+@keyframes dash {
+    from {
+        stroke-dashoffset: 24;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.react-js-diagrams-canvas path {
+    fill: none;
+    pointer-events: all;
+}
+
+.react-js-diagrams-canvas path.selected {
+    stroke: #00c0ff !important;
+    stroke-dasharray: 10, 2;
+    animation: dash 1s linear infinite;
+}
+
+.react-js-diagrams-canvas .port {
+    width: 15px;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.react-js-diagrams-canvas .port:hover, .react-js-diagrams-canvas .port.selected {
+    background: #c0ff00;
+}
+
+.react-js-diagrams-canvas .basic-node {
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    color: white;
+    border: solid 2px black;
+    overflow: visible;
+    font-size: 11px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.react-js-diagrams-canvas .basic-node .title {
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    white-space: nowrap;
+}
+
+.react-js-diagrams-canvas .basic-node .title > * {
+    align-self: center;
+}
+
+.react-js-diagrams-canvas .basic-node .title .fa {
+    padding: 5px;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.react-js-diagrams-canvas .basic-node .title .fa {
+    padding: 5px;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.tooltip {
+    position: absolute !important;
+    width:auto !important;
+    min-width:50px !important;
+    max-width:250px !important;
+    padding:10px !important;
+}
+
+.red {
+    color: red;
+}
+
+.orange {
+    color: orange;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.react-js-diagrams-canvas .basic-node .title .fa:hover {
+    opacity: 1.0;
+}
+
+.react-js-diagrams-canvas .basic-node .title .name {
+    flex-grow: 1;
+    padding: 5px 5px;
+}
+
+.react-js-diagrams-canvas .basic-node .ports {
+    display: flex;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2));
+}
+
+.react-js-diagrams-canvas .basic-node .ports .in, .react-js-diagrams-canvas .basic-node .ports .out {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.react-js-diagrams-canvas .basic-node .ports .in-port, .react-js-diagrams-canvas .basic-node .ports .out-port {
+    display: flex;
+    margin-top: 1px;
+}
+
+.react-js-diagrams-canvas .basic-node .ports .in-port > *, .react-js-diagrams-canvas .basic-node .ports .out-port > * {
+    align-self: center;
+}
+
+.react-js-diagrams-canvas .basic-node .ports .in-port .name, .react-js-diagrams-canvas .basic-node .ports .out-port .name {
+    padding: 0 5px;
+}
+
+.react-js-diagrams-canvas .basic-node .ports .out-port {
+    justify-content: flex-end;
+}
+
+.react-js-diagrams-canvas .basic-node .ports .out-port .name {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.parent-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.parent-container .nodes-panel {
+    max-width: 10rem;
+    background: #787878;
+    border-right: 1px solid black;
+    padding: 1rem;
+}
+
+.parent-container .nodes-panel h1 {
+    color: white;
+    padding: 1rem;
+}
+
+.parent-container .nodes-panel .node-wrapper {
+    flex: 0 0 auto;
+    margin-bottom: 1rem;
+}
+
+.parent-container .nodes-panel .node-wrapper .basic-node {
+    width: 110px;
+}
+
+.parent-container .repository-panel {
+    max-width: 10rem;
+    background: #787878;
+    border-right: 1px solid black;
+    padding: 1rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.parent-container .repository-panel .group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    vertical-align: middle;
+    color: white;
+    font-size: 12px;
+}
+
+.parent-container .repository-panel .group button {
+    margin: 2px;
+    padding: 2px 2px;
+}
+
+.parent-container .repository-panel h1 {
+    color: white;
+    padding: 1rem;
+}
+
+.parent-container .repository-panel .node-wrapper {
+    flex: 0 0 auto;
+    margin: 2px;
+}
+
+.parent-container .repository-panel .node-wrapper .basic-node {
+    width: 110px;
+}
+
+.parent-container .repository-panel::-webkit-scrollbar {
+    width: 7px;
+    background-color: #3e3e3e;
+}
+
+.parent-container .repository-panel::-webkit-scrollbar-thumb {
+    background-color: #5e5e5e;
+}
+
+.parent-container .repository-panel::-webkit-scrollbar-thumb {
+    background-color: #5e5e5e;
+}
+
+.parent-container .repository-panel-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #3e3e3e;
+}
+
+.parent-container .controls-panel {
+    max-width: 30rem;
+    background: #787878;
+    border-left: 1px solid black;
+    padding: 1rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.parent-container .controls-panel::-webkit-scrollbar {
+    width: 7px;
+    background-color: #3e3e3e;
+}
+
+.parent-container .controls-panel::-webkit-scrollbar-thumb {
+    background-color: #5e5e5e;
+}
+
+.parent-container .controls-panel::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #3e3e3e;
+}
+
+.parent-container .controls-buttons {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    padding: 5px 12px;
+    margin: 8px 0;
+}
+
+.parent-container .controls-buttons .controls-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.parent-container .controls-panel .ports {
+    color: white;
+    font-size: 12px;
+}
+
+.parent-container .controls-panel .path {
+    color: white;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.parent-container .controls-panel .path table td {
+    border-bottom: solid 1px black;
+}
+
+.parent-container .controls-panel .path table {
+    text-align: left;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.parent-container .controls-panel .path table th {
+    text-decoration: underline;
+    text-align: left;
+}
+
+.parent-container .controls-panel .ports table {
+    width: 100%;
+}
+
+.parent-container .controls-panel .ports table th {
+    text-decoration: underline;
+    text-align: left;
+}
+
+.parent-container .controls-panel .ports input[type=text], input[type=number] {
+    border: 1px solid black;
+    border-radius: 2px;
+    background-color: #555555;
+    color: white;
+    width: 100%;
+    padding: 2px 6px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-upload {
+    background-color: #555555;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    border-radius: 2px;
+    padding: 2px 6px;
+    margin: 8px;
+    border: 1px solid black;
+}
+
+button {
+    background-color: #555555;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    border-radius: 2px;
+    padding: 2px 6px;
+    margin: 8px;
+    border: 1px solid black;
+}
+
+button:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.mode button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border: 2px dashed rgba(0,153,0, 1);
+}
+
+input[type=text], input[type=number] {
+    border: 1px solid black;
+    border-radius: 4px;
+    background-color: #555555;
+    color: white;
+    width: 100%;
+    padding: 2px 6px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+input[type=checkbox] {
+    border: 1px solid black;
+    border-radius: 4px;
+    background-color: #555555;
+    color: white;
+    width: 100%;
+    padding: 2px 6px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid black;
+    border-radius: 4px;
+    background-color: #555555;
+    color: white;
+    width: 100%;
+    padding: 2px 6px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+input[type=text]:read-only, input[type=number]:read-only {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.parent-container .controls-panel h1, h2, h3, h4, h5 {
+    color: white;
+    padding: 1rem;
+    text-decoration: underline;
+}
+
+.parent-container .controls-panel pre {
+    color: white;
+    padding: 1rem;
+}
+
+.parent-container .diagram-drop-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.parent-container .diagram-drop-container .react-js-diagrams-canvas {
+    flex: 1;
+    background: #3c3c3c;
+}
+
+.parent-container .controls {
+    flex: 0 0 20rem;
+    max-width: 20rem;
+    overflow: auto;
+}
+
+.port {
+    width: 15px;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.port:hover, .port.selected {
+    background: #c0ff00;
+}
+
+.basic-node {
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    color: white;
+    border: solid 2px black;
+    overflow: hidden;
+    font-size: 11px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.basic-node .title {
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    white-space: pre-wrap;
+}
+
+.basic-node .title > * {
+    align-self: center;
+}
+
+.basic-node .title .fa {
+    padding: 5px;
+    opacity: 0.2;
+    cursor: pointer;
+}
+
+.basic-node .title .fa:hover {
+    opacity: 1.0;
+}
+
+.basic-node .title .name {
+    flex-grow: 1;
+    padding: 5px 5px;
+}
+
+.basic-node .ports {
+    justify-content: space-between;
+    display: flex;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2));
+}
+
+.basic-node .ports .in {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+}
+
+.basic-node .ports .out {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+}
+
+.basic-node .ports .in-port, .basic-node .ports .out-port {
+    display: flex;
+    margin-top: 1px;
+}
+
+.basic-node .ports .in-port > *, .basic-node .ports .out-port > * {
+    align-self: center;
+}
+
+.basic-node .ports .in-port .name, .basic-node .ports .out-port .name {
+    padding: 0 5px;
+}
+
+.basic-node .ports .out-port {
+    justify-content: flex-end;
+}
+
+.basic-node .ports .out-port .name {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.info {
+    position: absolute;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    right: 0.5em;
+    bottom: 0.5em;
+    padding: 0.5em;
+    background: rgba(30, 30, 30, 0.8);
+    border-radius: 8px;
+    transition: opacity 100ms ease;
+}
+
+.info svg {
+    display: block;
+    width: 2em;
+    fill: #fff;
+    stroke: #fff;
+}
+
+.info:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.info:hover + .about {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+.about {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 1em;
+    background: rgba(30, 30, 30, 0.95);
+    border: 2px solid rgb(30, 30, 30);
+    border-radius: 8px;
+    color: #fff;
+    text-align: center;
+    transform: translate(-50%, -50%) scale(0.8);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 100ms ease, transform 100ms ease;
+    z-index: 20;
+    backface-visibility: hidden;
+}
+
+.about > h1 {
+    margin: 0;
+    font-weight: 200;
+}
+
+.about > h2 {
+    margin: 0 0 1em;
+    font-size: 1em;
+    letter-spacing: -0.05em;
+}
+
+.about > p {
+    margin: 0 0 0.5em;
+    font-weight: 300;
+}
+
+.about > p > strong {
+    font-weight: 500;
+}
+
+.about a {
+    color: white;
+}
+
+/*
+    react-confirmation-alert
+ */
+
+.react-confirm-alert-blur {
+    filter: url(#gaussian-blur);
+    filter: blur(2px);
+    -webkit-filter: blur(2px);
+}
+
+.react-confirm-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background: rgba(255, 255, 255, 0.4);
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    justify-content: center;
+    -ms-align-items: center;
+    align-items: center;
+    opacity: 0;
+    -webkit-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+    -moz-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+    -o-animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+    animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+}
+
+.react-confirm-alert {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 40%;
+    padding: 20px;
+    text-align: left;
+    background: #787878;
+    border-radius: 10px;
+    box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
+    color: white;
+}
+
+.react-confirm-alert-svg{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.react-confirm-alert > h1 {
+    text-decoration: underline;
+    margin-top: 0;
+}
+
+.react-confirm-alert > h3 {
+    text-decoration: none;
+    margin: 0;
+}
+
+.react-confirm-alert-button-group {
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.react-confirm-alert-button-group > button {
+    background-color: #555555;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    border-radius: 2px;
+    padding: 2px 6px;
+    margin: 8px;
+    border: 1px solid black;
+}
+
+.react-confirm-alert-button-group > button:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.react-confirm-alert-button-group > button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@-webkit-keyframes react-confirm-alert-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes react-confirm-alert-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes react-confirm-alert-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes react-confirm-alert-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
