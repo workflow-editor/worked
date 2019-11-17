@@ -10,8 +10,11 @@ services:
       args:
         NODE_ENV: development
         REACT_APP_API_URL: http://localhost:9501/
-    volumes:
-      - '.:/usr/src/app'
     ports:
       - '127.0.0.1:9502:3000'
     restart: always
+    healthcheck:
+      test: "nc -z localhost 3000"
+      interval: 1s
+      timeout: 10s
+      retries: 5
