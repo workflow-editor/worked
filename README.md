@@ -1,5 +1,7 @@
 # README
 
+Currently only _Firefox_ is supported as browser.
+
 ## IDE
 - Clone repository
 - Download and install [WebStorm](https://www.jetbrains.com/webstorm/)
