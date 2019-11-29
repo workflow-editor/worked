@@ -1,6 +1,6 @@
 # README
 
-Currently only _Firefox_ is supported as browser.
+Currently only _Chrome based_ browsers are supported.
 
 ## IDE
 - Clone repository
