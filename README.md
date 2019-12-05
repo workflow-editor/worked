@@ -25,11 +25,16 @@ Be sure you did _important preparations_ before continuing!
 Build images for each environment:
 
 ```
-sudo docker build -t worked-dev:latest -f Dockerfile-dev .
+sudo docker build -t worked-dev:latest --build-arg NODE_ENV=development --build-arg REACT_APP_API_URL=http://localhost:9501/ -f Dockerfile-dev .
 
 # OR
 
 sudo docker build -t worked-prod:latest -f Dockerfile-prod .
+```
+
+and run `dev` with
+```
+docker run -p '9502:3000' worked-dev:latest
 ```
 
 Maybe use docker-compose afterwards and reference the images.
