@@ -39,7 +39,7 @@ class DepthFirstSearchPathFinder {
         });
 
         if (startAdjacent) {
-           this.dfs(startAdjacent.node, visited, paths);
+            this.dfs(startAdjacent.node, visited, paths);
         }
     }
 
@@ -76,7 +76,7 @@ class DepthFirstSearchPathFinder {
 
         currentNodeAdjacent.targets.forEach((u) => {
             //if (!visited[u.id]) { // prevent cycle if required
-                this.dfs(u, visited, paths);
+            this.dfs(u, visited, paths);
             //}
 
             return true;
@@ -145,8 +145,13 @@ export class ParserDSL extends Parser {
         errorNodes.forEach((errorNode) => {
             raisedErrors.push(this.adjustNaming(errorNode.name));
         });
-        res += raisedErrors.join(' ');
-        res += ' ' + this.adjustNaming(endNode.name);
+
+        // If there is no raised error, no arbitrary whitespace is set before end node name
+        if (raisedErrors.length !== 0) {
+            res += raisedErrors.join(' ');
+            res += ' ';
+        }
+        res += this.adjustNaming(endNode.name);
         res += ')';
 
         // ports as "state variables" from start/end/errors
@@ -165,11 +170,11 @@ export class ParserDSL extends Parser {
 
         // errors
         raisedErrors.forEach((error) => {
-            res += '('+ error +' true EXIT)'
+            res += '(' + error + ' true EXIT)'
         });
 
         // end
-        res += '('+ this.adjustNaming(endNode.name) +' true EXIT)';
+        res += '(' + this.adjustNaming(endNode.name) + ' true EXIT)';
         res += ')';
 
         // output paths
@@ -212,10 +217,12 @@ export class ParserDSL extends Parser {
         let currentNodeAdj = ParserDSL.determineAdjacent(model, currentNode);
 
         if (currentNodeAdj.targets.length > 0) {
-            if (currentNodeAdj.seq) {
-                res += 'SEQ (';
-            } else {
-                res += 'PAR (';
+            if (currentNode.nodeType !== 'start') {
+                if (currentNodeAdj.seq) {
+                    res += 'SEQ (';
+                } else {
+                    res += 'PAR (';
+                }
             }
         }
 
@@ -236,7 +243,9 @@ export class ParserDSL extends Parser {
         });
 
         if (currentNodeAdj.targets.length > 0) {
-            res += ') ';
+            if (currentNode.nodeType !== 'start') {
+                res += ') ';
+            }
         }
 
         return res;
@@ -331,8 +340,8 @@ export class ParserDSL extends Parser {
                 separator = '^';
             }
 
-            if (node.type === 'start' ) separator = '+';
-            if (node.type === 'end' ) separator = '^';
+            if (node.type === 'start') separator = '+';
+            if (node.type === 'end') separator = '^';
             if (node.type === 'error' && node.category && node.category === 'error') separator = '^';
 
             portsArr.push(separator + this.adjustNaming(node.name + '.' + port.name));
@@ -362,26 +371,22 @@ export class ParserDSL extends Parser {
         let targets = [];
 
         Object.keys(currentNode.ports).map((portId) => {
-
             let port = currentNode.ports[portId];
-
             if (!port.in) {
-
                 Object.keys(port.links).map((linkId) => {
                     let link = model.links[linkId];
-
                     if (link.targetPort && link.targetPort.parentNode) {
-
-                        if (link.targetPort.parentNode.nodeType !== 'end' || (link.targetPort.parentNode.nodeType !== 'task' && link.targetPort.parentNode.category && link.targetPort.parentNode.category === 'error')) {
+                        if (link.targetPort.parentNode.nodeType !== 'end'
+                                || (link.targetPort.parentNode.nodeType !== 'task'
+                                && link.targetPort.parentNode.category
+                                && link.targetPort.parentNode.category === 'error')) {
                             let link = model.links[linkId];
                             targets.push(link.targetPort.parentNode);
                         }
                     }
-
                     return true;
                 });
             }
-
             return true;
         });
 
